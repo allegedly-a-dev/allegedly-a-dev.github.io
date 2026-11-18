@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>allegedly a dev</title>
+  <meta name="description" content="allegedly a dev">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="lang" aria-label="Language">
+    <button type="button" data-lang="en" aria-pressed="true">EN</button>
+    <span aria-hidden="true">/</span>
+    <button type="button" data-lang="fr" aria-pressed="false">FR</button>
+  </nav>
+
+  <header class="hero">
+    <img src="typewriter.jpg" width="2000" height="1500"
+         data-i18n-alt="alt"
+         alt="Sage-green typewriter built from toy bricks with a bit of HTML typed on the sheet: Allegedly a dev, Hello World.">
+  </header>
+
+  <main>
+    <h1>allegedly a dev<span class="cursor">_</span></h1>
+    <p class="prompt"><span data-i18n="ls">/projects</span></p>
+    <ul class="projects">
+      <li>
+        <a href="https://carte-dae.github.io/index.en.html" data-i18n-href="dae_url">carte-dae.github.io</a>
+        <span class="muted" data-i18n="dae">A map of defibrillators (AEDs) in France, to find the nearest one fast.</span>
+      </li>
+    </ul>
+
+  </main>
+
+  <footer class="foot"><a id="contact-link" href="#contact" data-i18n="contact_h">contact</a></footer>
+
+  <script src="js/contact.js"></script>
+  <script>
+    var T = {
+      en: {
+        desc: "allegedly a dev",
+        alt: "Sage-green typewriter built from toy bricks with a bit of HTML typed on the sheet: Allegedly a dev, Hello World.",
+        ls: "/projects",
+        contact_h: "contact",
+        dae_url: "https://carte-dae.github.io/index.en.html",
+        dae: "A map of defibrillators (AEDs) in France, to find the nearest one fast."
+      },
+      fr: {
+        desc: "allegedly a dev",
+        alt: "Machine à écrire vert sauge en briques de construction, avec un bout de HTML tapé sur la feuille : Allegedly a dev, Hello World.",
+        ls: "/projets",
+        contact_h: "contact",
+        dae_url: "https://carte-dae.github.io/",
+        dae: "Une carte des défibrillateurs (DAE) en France, pour trouver le plus proche rapidement."
+      }
+    };
+
+    function setLang(lang) {
+      var t = T[lang] || T.en;
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-i18n]").forEach(function (el) {
+        el.textContent = t[el.dataset.i18n];
+      });
+      document.querySelectorAll("[data-i18n-href]").forEach(function (el) {
+        el.href = t[el.dataset.i18nHref];
+      });
+      document.querySelectorAll("[data-i18n-alt]").forEach(function (el) {
+        el.alt = t[el.dataset.i18nAlt];
+      });
+      document.querySelector('meta[name="description"]').content = t.desc;
+      document.querySelectorAll(".lang button").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b.dataset.lang === lang));
+      });
+      try { localStorage.setItem("lang", lang); } catch (e) {}
+    }
+
+    document.querySelectorAll(".lang button").forEach(function (b) {
+      b.addEventListener("click", function () { setLang(b.dataset.lang); });
+    });
+
+    var saved = null;
+    try { saved = localStorage.getItem("lang"); } catch (e) {}
+    var initial = saved || ((navigator.language || "").slice(0, 2) === "fr" ? "fr" : "en");
+    if (initial !== "en") setLang(initial);
+  </script>
+</body>
+</html>
